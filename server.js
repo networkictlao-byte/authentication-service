@@ -1,11 +1,22 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+const morgan = require("morgan");
 const authRoutesV1 = require("./src/routes/v1/auth");
 const authRoutesV2 = require("./src/routes/v2/auth");
 
 const app = express();
 
 // ── Middleware ──────────────────────────────────────────────────────────────
+/*
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+*/
+app.set("trust proxy", 1);
+app.use(helmet());
+app.use(cors());
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -29,6 +40,7 @@ app.use((err, req, res, _next) => {
 });
 
 // ── Start ────────────────────────────────────────────────────────────────────
+/*
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
@@ -38,5 +50,14 @@ app.listen(PORT, () => {
   console.log(`   POST /api/{version}/auth/logout`);
   console.log(`   GET  /api/{version}/auth/profile  (protected)`);
 });
+*/
+
+if (require.main === module) {
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running locally on http://localhost:${PORT}`);
+    console.log(`   API routes registered and ready.`);
+  });
+}
 
 module.exports = app;
