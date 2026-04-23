@@ -30,6 +30,20 @@ app.use("/api/v2/auth", authRoutesV2);
 // Health check
 app.get("/", (req, res) => res.json({ status: "ok", message: "JWT Auth API running" }));
 
+// Debug paths
+app.get("/debug", (req, res) => {
+  const path = require("path");
+  const fs = require("fs");
+  const usersPath = path.join(__dirname, "users.json");
+  res.json({
+    dirname: __dirname,
+    usersPath: usersPath,
+    exists: fs.existsSync(usersPath),
+    cwd: process.cwd(),
+    files: fs.readdirSync(process.cwd())
+  });
+});
+
 // 404 handler
 app.use((req, res) => res.status(404).json({ success: false, message: "Route not found" }));
 
