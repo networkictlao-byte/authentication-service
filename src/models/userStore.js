@@ -53,7 +53,7 @@ const saveData = () => {
 };
 
 // Initial load
-loadData();
+// loadData(); // Disabled for Vercel compatibility (Read-only filesystem)
 
 const UserStore = {
   findByEmail: (email) => users.find((u) => u.email === email),
@@ -61,7 +61,7 @@ const UserStore = {
   create: (data) => {
     const user = { id: idCounter++, createdAt: new Date().toISOString(), ...data };
     users.push(user);
-    saveData(); // Save to JSON file when a user is created
+    // saveData(); // Disabled for Vercel compatibility (Read-only filesystem)
     return user;
   },
   // Return safe user object (no password)
