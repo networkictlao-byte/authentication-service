@@ -32,16 +32,29 @@ app.get("/", (req, res) => res.json({ status: "ok", message: "JWT Auth API runni
 
 // Debug paths
 app.get("/debug", (req, res) => {
-  const path = require("path");
-  const fs = require("fs");
-  const usersPath = path.join(__dirname, "users.json");
-  res.json({
-    dirname: __dirname,
-    usersPath: usersPath,
-    exists: fs.existsSync(usersPath),
-    cwd: process.cwd(),
-    files: fs.readdirSync(process.cwd())
-  });
+  try {
+    const path = require("path");
+    const fs = require("fs");
+    const usersPath = path.join(process.cwd(), "users.json");
+    res.json({
+      success: true,
+      dirname: __dirname,
+      cwd: process.cwd(),
+      usersPath: usersPath,
+      usersExists: fs.existsSync(usersPath),
+      env: {
+        node_env: process.env.NODE_ENV,
+        has_jwt_secret: !!process.env.JWT_SECRET,
+        has_refresh_secret: !!process.env.JWT_REFRESH_SECRET
+      }
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+      stack: err.stack
+    });
+  }
 });
 
 // 404 handler

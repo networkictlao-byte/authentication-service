@@ -1,5 +1,13 @@
-const app = require("../server");
-
-// Vercel natively supports Express apps by exporting the app instance.
-// No need for serverless-http as it may cause timeouts or connection resets.
-module.exports = app;
+try {
+  const app = require("../server");
+  module.exports = app;
+} catch (err) {
+  module.exports = (req, res) => {
+    res.status(500).json({
+      success: false,
+      message: "Failed to load server.js in Vercel function",
+      error: err.message,
+      stack: err.stack
+    });
+  };
+}
