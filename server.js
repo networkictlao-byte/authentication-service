@@ -84,12 +84,12 @@ app.listen(PORT, () => {
 });
 */
 
-if (require.main === module) {
-  const PORT = process.env.PORT || 8080;
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running locally on http://localhost:${PORT}`);
-    console.log(`   API routes registered and ready.`);
-  });
-}
+// if (require.main === module) {
+//   const PORT = process.env.PORT || 8080;
+//   app.listen(PORT, () => {
+//     console.log(`🚀 Server running locally on http://localhost:${PORT}`);
+//     console.log(`   API routes registered and ready.`);
+//   });
+// }
 
 module.exports = app;

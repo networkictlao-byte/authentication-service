@@ -17,10 +17,10 @@ app.use("/api/v1/auth", authRoutesV1);
 app.use("/api/v2/auth", authRoutesV2);
 
 // Health check
-app.get("/api", (req, res) => res.json({ 
-  status: "ok", 
-  message: "Authentication Service is running on Vercel",
-  time: new Date().toISOString()
+app.get("/api", (req, res) => res.json({
+    status: "ok",
+    message: "Authentication Service is running on Vercel",
+    time: new Date().toISOString()
 }));
 
 // Fallback for root if accessed via /api/index
