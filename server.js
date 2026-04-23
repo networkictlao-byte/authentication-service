@@ -28,7 +28,12 @@ app.use("/api/v1/auth", authRoutesV1);
 app.use("/api/v2/auth", authRoutesV2);
 
 // Health check
-app.get("/", (req, res) => res.json({ status: "ok", message: "JWT Auth API running" }));
+app.get("/", (req, res) => res.json({ 
+  status: "ok", 
+  message: "JWT Auth API running",
+  url: req.url,
+  originalUrl: req.originalUrl
+}));
 
 // Debug paths
 app.get("/debug", (req, res) => {

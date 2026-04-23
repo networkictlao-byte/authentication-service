@@ -1,13 +1,12 @@
-try {
-  const app = require("../server");
-  module.exports = app;
-} catch (err) {
-  module.exports = (req, res) => {
-    res.status(500).json({
-      success: false,
-      message: "Failed to load server.js in Vercel function",
-      error: err.message,
-      stack: err.stack
-    });
-  };
-}
+// Temporary test entry point to confirm Vercel function is running
+module.exports = (req, res) => {
+  res.json({
+    status: "ok",
+    message: "Vercel function is reachable",
+    timestamp: new Date().toISOString(),
+    env: {
+      node_env: process.env.NODE_ENV,
+      port: process.env.PORT
+    }
+  });
+};
