@@ -30,7 +30,26 @@ const rateLimit = require("express-rate-limit");
 
 // Security Middleware
 app.use(helmet()); // Set security HTTP headers
+/*
 app.use(mongoSanitize()); // Prevent NoSQL injection
+*/
+
+/*
+// Prevent NoSQL injection (Body only to avoid read-only 'query' error on Vercel)
+app.use(mongoSanitize({
+  allowDots: true,
+  replaceWith: "_",
+}));
+*/
+
+// Prevent NoSQL injection (Manual sanitization to avoid Vercel's read-only 'req.query' error)
+app.use((req, res, next) => {
+  if (req.body) mongoSanitize.sanitize(req.body);
+  if (req.params) mongoSanitize.sanitize(req.params);
+  next();
+});
+
+
 app.set("trust proxy", 1); // Required for rate limiting behind Vercel/proxies
 
 // Global Rate Limiting (General protection)
