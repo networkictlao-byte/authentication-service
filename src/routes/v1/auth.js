@@ -8,13 +8,24 @@ const { register, login, refresh, logout, profile } = require("../../controllers
 const { register, login, refresh, logout, profile, deleteUser } = require("../../controllers/v1/authController");
 */
 
+/*
 const { register, login, refresh, logout, profile, deleteUser, getUsers } = require("../../controllers/v1/authController");
+*/
+
+/*
+const { register, login, refresh, logout, profile, deleteUser, getUsers, updateUser } = require("../../controllers/v1/authController");
+*/
+
+const { register, login, refresh, logout, profile, deleteUser, getUsers, updateUser, changePassword } = require("../../controllers/v1/authController");
+
+
 
 
 const { authenticate } = require("../../middleware/auth");
 const MESSAGES = require("../../utils/messages");
 const { authLimiter } = require("../../middleware/rateLimiter");
-const { isAdmin } = require("../../middleware/role");
+const { isAdmin, isSelfOrAdmin } = require("../../middleware/role");
+
 
 
 
@@ -57,6 +68,17 @@ const loginRules = [
   body("password").notEmpty().withMessage(MESSAGES.VALIDATION.PASSWORD_REQUIRED),
 ];
 
+const updateRules = [
+  body("name").optional().trim().isLength({ min: 2 }).withMessage(MESSAGES.VALIDATION.NAME_LENGTH),
+  body("email").optional().isEmail().normalizeEmail().withMessage(MESSAGES.VALIDATION.EMAIL_REQUIRED),
+];
+
+const passwordRules = [
+  body("newPassword").isLength({ min: 6 }).withMessage(MESSAGES.VALIDATION.PASSWORD_LENGTH),
+];
+
+
+
 
 /*
 // Routes
@@ -66,11 +88,23 @@ router.post("/refresh", refresh);
 router.post("/logout", logout);
 */
 
+/*
 // Routes
 router.post("/register", authLimiter, registerRules, validate, register);
 router.post("/login", authLimiter, loginRules, validate, login);
 router.post("/refresh", refresh);
 router.post("/logout", logout);
+*/
+
+// Routes
+router.post("/register", authLimiter, registerRules, validate, register);
+router.post("/login", authLimiter, loginRules, validate, login);
+router.post("/refresh", refresh);
+router.post("/logout", logout);
+router.put("/user/:id", authenticate, isSelfOrAdmin, updateRules, validate, updateUser);
+router.put("/change-password/:id", authenticate, isSelfOrAdmin, passwordRules, validate, changePassword);
+
+
 
 /*
 router.get("/profile", authenticate, profile);

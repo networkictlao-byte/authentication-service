@@ -364,4 +364,116 @@ const getUsers = async (req, res, next) => {
   }
 };
 
+/*
+// PUT /api/auth/user/:id
+const updateUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { name, email, phoneNumber, status, allow } = req.body;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: MESSAGES.USER.NOT_FOUND });
+    }
+
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phoneNumber) user.phoneNumber = phoneNumber;
+    if (status) user.status = status;
+    if (allow !== undefined) user.allow = allow;
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: MESSAGES.USER.UPDATE_SUCCESS,
+      data: { user: user.toJSON() },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+*/
+
+// PUT /api/auth/user/:id
+const updateUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { name, email, phoneNumber, status, allow } = req.body;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: MESSAGES.USER.NOT_FOUND });
+    }
+
+    // Basic updates (allowed for self or admin)
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phoneNumber) user.phoneNumber = phoneNumber;
+
+    // Admin-only updates
+    if (req.user.status === "admin") {
+      if (status) user.status = status;
+      if (allow !== undefined) user.allow = allow;
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: MESSAGES.USER.UPDATE_SUCCESS,
+      data: { user: user.toJSON() },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+/*
 module.exports = { register, login, refresh, logout, profile, deleteUser, getUsers };
+*/
+
+// PUT /api/auth/change-password/:id
+const changePassword = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { oldPassword, newPassword } = req.body;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: MESSAGES.USER.NOT_FOUND });
+    }
+
+    // Logic: If NOT admin, must provide and verify old password
+    if (req.user.status !== "admin") {
+      if (!oldPassword) {
+        return res.status(400).json({ success: false, message: "Old password is required" });
+      }
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ success: false, message: MESSAGES.AUTH.INVALID_OLD_PASSWORD });
+      }
+    }
+
+    // Hash and save new password
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: MESSAGES.AUTH.PASSWORD_CHANGE_SUCCESS,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+/*
+module.exports = { register, login, refresh, logout, profile, deleteUser, getUsers, updateUser };
+*/
+
+module.exports = { register, login, refresh, logout, profile, deleteUser, getUsers, updateUser, changePassword };
+
+
