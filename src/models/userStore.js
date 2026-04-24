@@ -70,6 +70,7 @@ const UserStore = {
 };
 */
 
+/*
 const UserStore = {
   findByEmail: (email) => users.find((u) => u.email === email),
   findById: (id) => users.find((u) => u.id === id),
@@ -91,6 +92,31 @@ const UserStore = {
   // Return safe user object (no password)
   sanitize: ({ password, ...user }) => user,
 };
+*/
+
+const UserStore = {
+  findByEmail: (email) => users.find((u) => u.email === email),
+  findById: (id) => users.find((u) => u.id === id),
+  getAll: () => users,
+  create: (data) => {
+    const user = { id: idCounter++, createdAt: new Date().toISOString(), ...data };
+    users.push(user);
+    saveData(); // Disabled for Vercel compatibility (Read-only filesystem)
+    return user;
+  },
+  delete: (id) => {
+    const index = users.findIndex((u) => u.id === parseInt(id));
+    if (index !== -1) {
+      users.splice(index, 1);
+      saveData(); // Disabled for Vercel compatibility (Read-only filesystem)
+      return true;
+    }
+    return false;
+  },
+  // Return safe user object (no password)
+  sanitize: ({ password, ...user }) => user,
+};
+
 
 
 module.exports = UserStore;

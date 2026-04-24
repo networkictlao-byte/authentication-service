@@ -156,10 +156,29 @@ const deleteUser = (req, res, next) => {
   }
 };
 
+// GET /api/auth/users
+const getUsers = (req, res, next) => {
+  try {
+    const users = UserStore.getAll().map((user) => UserStore.sanitize(user));
+    return res.status(200).json({
+      success: true,
+      data: { users },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 
 /*
 module.exports = { register, login, refresh, logout, profile };
 */
 
+/*
 module.exports = { register, login, refresh, logout, profile, deleteUser };
+*/
+
+module.exports = { register, login, refresh, logout, profile, deleteUser, getUsers };
+
 

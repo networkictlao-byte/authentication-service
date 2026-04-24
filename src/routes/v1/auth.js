@@ -4,7 +4,12 @@ const { body, validationResult } = require("express-validator");
 const { register, login, refresh, logout, profile } = require("../../controllers/v1/authController");
 */
 
+/*
 const { register, login, refresh, logout, profile, deleteUser } = require("../../controllers/v1/authController");
+*/
+
+const { register, login, refresh, logout, profile, deleteUser, getUsers } = require("../../controllers/v1/authController");
+
 
 const { authenticate } = require("../../middleware/auth");
 
@@ -40,7 +45,13 @@ router.get("/profile", authenticate, profile);
 */
 
 router.get("/profile", authenticate, profile);
+/*
 router.delete("/user/:id", authenticate, deleteUser);
+*/
+
+router.delete("/user/:id", authenticate, deleteUser);
+router.get("/users", authenticate, getUsers);
+
 
 
 module.exports = router;
