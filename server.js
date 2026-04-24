@@ -4,7 +4,17 @@ const cors = require("cors");
 const authRoutesV1 = require("./src/routes/v1/auth");
 const authRoutesV2 = require("./src/routes/v2/auth");
 
+/*
 const app = express();
+*/
+
+const connectDB = require("./src/config/db");
+
+// Connect to Database
+connectDB();
+
+const app = express();
+
 
 // Middleware
 app.set("trust proxy", 1);
