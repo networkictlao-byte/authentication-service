@@ -129,7 +129,37 @@ const profile = (req, res) => {
   return res.status(200).json({
     success: true,
     data: { user: req.user },
+/*
+  });
+};
+*/
+
   });
 };
 
+// DELETE /api/auth/user/:id
+const deleteUser = (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const deleted = UserStore.delete(id);
+
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+/*
 module.exports = { register, login, refresh, logout, profile };
+*/
+
+module.exports = { register, login, refresh, logout, profile, deleteUser };
+

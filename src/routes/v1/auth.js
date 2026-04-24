@@ -1,6 +1,11 @@
 const { Router } = require("express");
 const { body, validationResult } = require("express-validator");
+/*
 const { register, login, refresh, logout, profile } = require("../../controllers/v1/authController");
+*/
+
+const { register, login, refresh, logout, profile, deleteUser } = require("../../controllers/v1/authController");
+
 const { authenticate } = require("../../middleware/auth");
 
 const router = Router();
@@ -30,6 +35,12 @@ router.post("/register", registerRules, validate, register);
 router.post("/login", loginRules, validate, login);
 router.post("/refresh", refresh);
 router.post("/logout", logout);
+/*
 router.get("/profile", authenticate, profile);
+*/
+
+router.get("/profile", authenticate, profile);
+router.delete("/user/:id", authenticate, deleteUser);
+
 
 module.exports = router;
