@@ -13,6 +13,10 @@ const { register, login, refresh, logout, profile, deleteUser, getUsers } = requ
 
 const { authenticate } = require("../../middleware/auth");
 const MESSAGES = require("../../utils/messages");
+const { authLimiter } = require("../../middleware/rateLimiter");
+const { isAdmin } = require("../../middleware/role");
+
+
 
 
 const router = Router();
@@ -54,11 +58,20 @@ const loginRules = [
 ];
 
 
+/*
 // Routes
 router.post("/register", registerRules, validate, register);
 router.post("/login", loginRules, validate, login);
 router.post("/refresh", refresh);
 router.post("/logout", logout);
+*/
+
+// Routes
+router.post("/register", authLimiter, registerRules, validate, register);
+router.post("/login", authLimiter, loginRules, validate, login);
+router.post("/refresh", refresh);
+router.post("/logout", logout);
+
 /*
 router.get("/profile", authenticate, profile);
 */
@@ -68,8 +81,14 @@ router.get("/profile", authenticate, profile);
 router.delete("/user/:id", authenticate, deleteUser);
 */
 
+/*
 router.delete("/user/:id", authenticate, deleteUser);
 router.get("/users", authenticate, getUsers);
+*/
+
+router.delete("/user/:id", authenticate, isAdmin, deleteUser);
+router.get("/users", authenticate, isAdmin, getUsers);
+
 
 
 
