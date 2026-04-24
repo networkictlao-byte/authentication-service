@@ -12,6 +12,8 @@ const { register, login, refresh, logout, profile, deleteUser, getUsers } = requ
 
 
 const { authenticate } = require("../../middleware/auth");
+const MESSAGES = require("../../utils/messages");
+
 
 const router = Router();
 
@@ -24,16 +26,35 @@ const validate = (req, res, next) => {
   next();
 };
 
+/*
 const registerRules = [
   body("name").trim().notEmpty().withMessage("Name is required").isLength({ min: 2 }).withMessage("Name must be at least 2 characters"),
   body("email").isEmail().normalizeEmail().withMessage("Valid email is required"),
+  body("phoneNumber").optional().trim(),
   body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters"),
 ];
+*/
 
+const registerRules = [
+  body("name").trim().notEmpty().withMessage(MESSAGES.VALIDATION.NAME_REQUIRED).isLength({ min: 2 }).withMessage(MESSAGES.VALIDATION.NAME_LENGTH),
+  body("email").isEmail().normalizeEmail().withMessage(MESSAGES.VALIDATION.EMAIL_REQUIRED),
+  body("phoneNumber").optional().trim(),
+  body("password").isLength({ min: 6 }).withMessage(MESSAGES.VALIDATION.PASSWORD_LENGTH),
+];
+
+
+/*
 const loginRules = [
   body("email").isEmail().normalizeEmail().withMessage("Valid email is required"),
   body("password").notEmpty().withMessage("Password is required"),
 ];
+*/
+
+const loginRules = [
+  body("email").isEmail().normalizeEmail().withMessage(MESSAGES.VALIDATION.EMAIL_REQUIRED),
+  body("password").notEmpty().withMessage(MESSAGES.VALIDATION.PASSWORD_REQUIRED),
+];
+
 
 // Routes
 router.post("/register", registerRules, validate, register);
