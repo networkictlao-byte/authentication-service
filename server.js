@@ -52,12 +52,24 @@ app.use((req, res, next) => {
 
 app.set("trust proxy", 1); // Required for rate limiting behind Vercel/proxies
 
+/*
 // Global Rate Limiting (General protection)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per window
   message: { success: false, message: "Too many requests from this IP, please try again later." }
 });
+*/
+
+const MESSAGES = require("./src/utils/messages");
+
+// Global Rate Limiting (General protection)
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per window
+  message: { success: false, message: MESSAGES.RATE_LIMIT.GLOBAL }
+});
+
 app.use(limiter);
 
 app.use(cors()); // In production, replace with: cors({ origin: process.env.FRONTEND_URL })
