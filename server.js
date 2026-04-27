@@ -11,7 +11,7 @@ const app = express();
 const connectDB = require("./src/config/db");
 
 // Connect to Database
-connectDB();
+//connectDB();
 
 const app = express();
 
@@ -77,13 +77,23 @@ app.use(express.json({ limit: "10kb" })); // Body parser, with size limit
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
 
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+
 // Routes
 app.use("/api/v1/auth", authRoutesV1);
 app.use("/api/v2/auth", authRoutesV2);
 
 // Health check
-app.get("/", (req, res) => res.json({ 
-  status: "ok", 
+app.get("/", (req, res) => res.json({
+  status: "ok",
   message: "Authentication Service API",
   env: process.env.NODE_ENV
 }));
