@@ -92,11 +92,10 @@ app.use("/api/v1/auth", authRoutesV1);
 app.use("/api/v2/auth", authRoutesV2);
 
 // Health check
-// app.get("/", (req, res) => res.json({
-//   status: "ok",
-//   message: "Authentication Service API",
-//   env: process.env.NODE_ENV
-// }));
+app.get("/", (req, res) => res.json({
+  status: "ok",
+  message: "Authentication Service API"
+}));
 
 // Export for Vercel
 module.exports = app;
